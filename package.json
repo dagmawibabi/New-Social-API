@@ -4,6 +4,7 @@
   "description": "An API For The New-Social App",
   "main": "index.js",
   "scripts": {
+    "start": "index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

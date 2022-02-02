@@ -8,7 +8,7 @@ app.get("/",(req, res) => {
 
 
 // Home
-app.get("/",(req, res) => {
+app.get("/api/",(req, res) => {
     res.send("Welcome to New-Social API");
 });
 
