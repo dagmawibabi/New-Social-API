@@ -16,7 +16,26 @@ app.get("/api/",(req, res) => {
 
 
 // G L O B A L  C H A T
-let globalMessages = [];
+let globalMessages = [
+    {
+        "sender": "BoJack",
+        "message": "Well this is depressing",
+        "date": "12/2/2022",
+        "time": "4:22",
+    },
+    {
+        "sender": "Nate",
+        "message": "This's cool",
+        "date": "12/2/2022",
+        "time": "4:30",
+    },
+    {
+        "sender": "Batman",
+        "message": "I'm Batman 🦇",
+        "date": "12/2/2022",
+        "time": "4:46",
+    },
+];
 
 // Send Global Message
 app.get("/api/sendGlobalMessage/:sender/:message",(req, res)=>{
