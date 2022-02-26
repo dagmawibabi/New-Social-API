@@ -21,19 +21,19 @@ let globalMessages = [
         "sender": "BoJack",
         "message": "Well this is depressing",
         "date": "12/2/2022",
-        "time": "4:22",
+        "time": "4:22:14 PM",
     },
     {
         "sender": "Nate",
         "message": "This's cool",
         "date": "12/2/2022",
-        "time": "4:30",
+        "time": "4:30:16 PM",
     },
     {
         "sender": "Batman",
         "message": "I'm Batman 🦇",
         "date": "12/2/2022",
-        "time": "4:46",
+        "time": "4:46:12 PM",
     },
 ];
 
