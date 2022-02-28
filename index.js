@@ -53,7 +53,7 @@ app.get("/api/sendGlobalMessage/:sender/:message/:dp",(req, res)=>{
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);    
     let messageObject = {
-        "dp": (req.params.sender != "") ? req.params.sender : "",
+        "dp": "https://i.pinimg.com/564x/86/4d/3f/864d3f2beebcd48f4cf57052031de4a0.jpg",
         "sender": req.params.sender,
         "message": req.params.message,
         "date": today.toLocaleDateString(),
