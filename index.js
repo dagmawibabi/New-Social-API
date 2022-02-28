@@ -49,7 +49,7 @@ let globalMessages = [
 ];
 
 // Send Global Message
-app.get("/api/sendGlobalMessage/:sender/:message/:dp",(req, res)=>{
+app.get("/api/sendGlobalMessage/:sender/:message",(req, res)=>{
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);    
     let messageObject = {
