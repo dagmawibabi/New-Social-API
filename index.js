@@ -93,7 +93,7 @@ app.get("/api/sendGlobalMessage/:sender/:message",(req, res)=>{
 app.get("/api/receiveGlobalMessage", (req, res)=>{
     // fetch from a db
     let globalMessagesFromDB = [];
-    messagesModel.find().then((result) => {globalMessagesFromDB = result;});
+    await messagesModel.find().then((result) => {globalMessagesFromDB = result;});
     for(messages of globalMessagesFromDB){
         globalMessages.push(messages);
     }
