@@ -1,5 +1,18 @@
 let express = require("express");
 let app = express();
+let mongoose = require("mongoose");
+
+// Database
+let messagesSchema = new mongoose.Schema({
+    dp: String,
+    sender: String,
+    message: String,    
+    date: String,
+    time: String
+});
+
+let messagesModel = new mongoose.model("messages", messagesSchema);
+
 
 // Home
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -60,8 +73,19 @@ app.get("/api/sendGlobalMessage/:sender/:message",(req, res)=>{
         "time": today.toLocaleTimeString(),
     };
     //console.log(req.params);
-    console.log(messageObject);
+    //console.log(messageObject);
     globalMessages.push(messageObject);
+
+    // Save to DB
+    let newText = new messagesModel({
+        "dp": "https://i.pinimg.com/564x/86/4d/3f/864d3f2beebcd48f4cf57052031de4a0.jpg",
+        "sender": req.params.sender,
+        "message": req.params.message,
+        "date": today.toLocaleDateString(),
+        "time": today.toLocaleTimeString(), 
+    }).save();
+
+    
     res.send("Message Sent!");
 });
 
@@ -78,4 +102,22 @@ let portNum = process.env.PORT || 7000;
 app.listen(portNum, ()=>{
     console.log(`Server listening on port ${portNum}`);
 })
+
+
+
+
+
+async function connectToDB(){
+    console.log("Connecting...");
+    let mongoAtlastUrl = "mongodb+srv://NewSocialAPI:NewSocialAPI1234@cluster0.fivp4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+    await mongoose.connect(mongoAtlastUrl, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }).then(console.log("MDBA Connected!")).catch(err => console.log("ERROR"));
+    console.log("connected!");
+}
+
+connectToDB();
+
+
 
