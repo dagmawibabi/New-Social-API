@@ -111,6 +111,14 @@ app.get("/api/deleteGlobalMessage/:sender/:message/:time", async (req, res) => {
     res.send("Message Deleted!");
 })
 
+// Editing Global Message
+app.get("/api/updateGlobalMessage/:sender/:message/:time/:newMessage", async (req, res) => {
+    console.log("editting");
+    let b = await messagesModel.updateOne({sender: req.params.sender, message: req.params.message, time: req.params.time}, {$set: {sender: req.params.sender, message: req.params.newMessage, time: req.params.time}});
+    console.log("Done!");
+    res.send("Message Deleted!");
+})
+
 // Server
 let portNum = process.env.PORT || 7000;
 app.listen(portNum, ()=>{
