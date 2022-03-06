@@ -125,6 +125,19 @@ app.listen(portNum, ()=>{
     console.log(`Server listening on port ${portNum}`);
 })
 
+// admin quick changes 
+app.get("/api/changeDPGlobalMessage/:sender/:dp", async (req, res)=>{
+    console.log("fixing");
+    let b = await messagesModel.updateMany({sender: req.params.sender}, {$set: {dp: req.params.dp}});
+    console.log("Done!");
+    res.send("Changed DP!");
+})
+app.get("/api/changeDPGlobalMessage", async (req, res)=>{
+    console.log("fixing");
+    let b = await messagesModel.updateMany({sender: "yeabu"}, {$set: {dp: "https://i.pinimg.com/originals/48/3f/be/483fbebfa30d9d506715307a9de897b1.gif"}});
+    console.log("Done!");
+    res.send("Changed DP!");
+})
 
 
 
