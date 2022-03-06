@@ -106,8 +106,8 @@ app.get("/api/receiveGlobalMessage", async (req, res)=>{
 });
 
 // Delete Global Message
-app.get("/api/deleteGlobalMessage/:sender/:message", (req, res) => {
-    messagesModel.deleteOne({sender: req.params.sender, message: req.params.message});
+app.get("/api/deleteGlobalMessage/:sender/:message/:time", async (req, res) => {
+    let b = await messagesModel.deleteOne({sender: req.params.sender, message: req.params.message, time: req.params.time});
     res.send("Message Deleted!");
 })
 
