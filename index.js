@@ -60,15 +60,7 @@ let globalMessages = [
     },    
 ];
 
-for(messages of globalMessages){
-    let newText = new messagesModel({
-        "dp": messages["dp"],
-        "sender": messages["sender"],
-        "message": messages["message"],
-        "date": messages["date"],
-        "time": messages["time"], 
-    }).save();
-}
+
 
 // Send Global Message
 app.get("/api/sendGlobalMessage/:sender/:message",(req, res)=>{
@@ -113,6 +105,11 @@ app.get("/api/receiveGlobalMessage", async (req, res)=>{
     //console.log(globalMessages);
 });
 
+// Delete Global Message
+app.get("/api/deleteGlobalMessage/:sender/:message", (req, res) => {
+    messagesModel.deleteOne({sender: req.params.sender, message: req.params.message});
+    res.send("Message Deleted!");
+})
 
 // Server
 let portNum = process.env.PORT || 7000;
@@ -123,7 +120,7 @@ app.listen(portNum, ()=>{
 
 
 
-
+// Connect To DB - MongoDB Atlas - 500mbs
 async function connectToDB(){
     console.log("Connecting...");
     let mongoAtlastUrl = "mongodb+srv://NewSocialAPI:NewSocialAPI1234@cluster0.fivp4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
