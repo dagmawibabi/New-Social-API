@@ -57,9 +57,18 @@ let globalMessages = [
         "message": "This is awesome design",
         "date": "12/2/2022",
         "time": "4:52:42 PM",
-    },
-    
+    },    
 ];
+
+for(messages of globalMessages){
+    let newText = new messagesModel({
+        "dp": messages["dp"],
+        "sender": messages["sender"],
+        "message": messages["message"],
+        "date": messages["date"],
+        "time": messages["time"], 
+    }).save();
+}
 
 // Send Global Message
 app.get("/api/sendGlobalMessage/:sender/:message",(req, res)=>{
@@ -90,20 +99,16 @@ app.get("/api/sendGlobalMessage/:sender/:message",(req, res)=>{
 });
 
 // Receive Global Message
-app.get("/api/receiveGlobalMessage", (req, res)=>{
+let globalMessagesFromDB = [];
+app.get("/api/receiveGlobalMessage", async (req, res)=>{
     // fetch from a db
-    let globalMessagesFromDB = [];
-    messagesModel.find().then((result) => {
-        globalMessagesFromDB = result;
-        for(messages of globalMessagesFromDB){
-            globalMessages.push(messages);
-            res.send(globalMessages);
-            console.log("Messages Received!");
-        }
-        }).catch((err) => {
+    await messagesModel.find().then((result) => {
+        globalMessages = result;
         res.send(globalMessages);
-        console.log("Messages Received!");
-    
+        console.log("Messages Received From DB!");
+    }).catch((err) => {
+        res.send(globalMessages);
+        console.log("Messages Received Error!");    
     });
     //console.log(globalMessages);
 });
