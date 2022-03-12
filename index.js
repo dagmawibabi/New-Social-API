@@ -193,10 +193,14 @@ app.get("/api/getAllUsers", async (req, res) => {
 // Login
 app.get("/api/login/:username/:password", async (req,res ) => {
     await newUserModel.findOne({username: req.params.username, password: req.params.password}).then((result) => {
-        res.send(result)
+        if(result != "" || result != " " || result != null){
+            res.send(result)
+        } else {
+            res.send(" ");
+        }
         console.log(result);
     }).catch((err) => {
-        res.send(null);
+        res.send(" ");
         console.log(err);
     });
 });
