@@ -183,7 +183,7 @@ app.get("/api/createNewUser/:username/:password", async (req, res) => {
 // Get all usernames 
 app.get("/api/getAllUsers", async (req, res) => {
     await allUsersModel.find().then((result) => {
-        res.send(result)
+        res.send(result[0]["profiles"]);
         console.log(result[0]["profiles"]);
     }).catch((err) => {
         console.log(err)
