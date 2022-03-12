@@ -191,14 +191,14 @@ app.get("/api/getAllUsers", async (req, res) => {
 });
 
 // Login
-app.get("/api/login", async (req,res ) => {
-    await newUserModel.find().then((result) => {
+app.get("/api/login/:username/:password", async (req,res ) => {
+    await newUserModel.findOne({username: req.params.username, password: req.params.password}).then((result) => {
         res.send(result)
         console.log(result);
     }).catch((err) => {
-        res.send([]);
+        res.send(null);
         console.log(err);
-    })
+    });
 });
 
 //? Posts
