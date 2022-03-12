@@ -1,4 +1,5 @@
 let express = require("express");
+const { ListCollectionsCursor } = require("mongodb");
 let app = express();
 let mongoose = require("mongoose");
 
@@ -141,6 +142,79 @@ app.get("/api/changeDPGlobalMessage", async (req, res)=>{
 
 
 
+//?
+// Create a new User
+let newUserSchema = new mongoose.Schema({
+    dp: String,
+    username: String,
+    password: String,
+    creationDate: String,
+    creationTime: String,
+    profile: Array,
+    friends: Array,
+    posts: Array,
+    chats: Array,
+});
+
+let allUsersSchema = new mongoose.Schema({
+    profiles: Array,
+});
+
+let newUserModel = new mongoose.model("users", newUserSchema);
+let allUsersModel = new mongoose.model("allUsers", allUsersSchema);
+
+// Create a new User
+app.get("/api/createNewUser/:username/:password", async (req, res) => {
+    console.log("creating new user!");
+    const timeElapsed = Date.now();
+    const today = new Date(timeElapsed);    
+    let newUser = new newUserModel({
+        dp: "https://i.pinimg.com/564x/86/4d/3f/864d3f2beebcd48f4cf57052031de4a0.jpg",
+        username: req.params.username,
+        password: req.params.password,
+        creationDate: today.toLocaleDateString(),
+        creationTime: today.toLocaleTimeString(),
+    }).save();
+    await allUsersModel.updateOne({_id: "622cc8969b3a116206a8c96b"},{$push: {profiles: {username: req.params.username}}});
+    console.log("new user account created!");
+    res.send("New account created!");
+});
+
+// Get all usernames 
+app.get("/api/getAllUsers", async (req, res) => {
+    await allUsersModel.find().then((result) => {
+        res.send(result)
+        console.log(result[0]["profiles"]);
+    }).catch((err) => {
+        console.log(err)
+    });
+});
+
+// Create New Post
+app.get("/api/createNewPost/:username/:title/:subtitle/:likes/:shares", async (req, res) => {
+    console.log("creating new post...");
+    await newUserModel.updateOne(
+        {
+            username: req.params.username
+        }, 
+        {
+            $push: {
+                posts:
+                    {
+                        title: req.params.title, 
+                        subtitle: req.params.subtitle, 
+                        likes: req.params.likes, 
+                        shares: req.params.shares
+                    }   
+            }
+        }
+    );
+    console.log("new post created!");
+    res.send("New Post created!");
+});
+
+
+//!  IMPORTANT
 // Connect To DB - MongoDB Atlas - 500mbs
 async function connectToDB(){
     console.log("Connecting...");

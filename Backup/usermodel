@@ -1,0 +1,39 @@
+/*
+    friends: [
+        {
+            username: String,
+            followBack: Boolean,
+        }
+    ],
+    posts: [
+        {
+            title: String,
+            subtitle: String,
+            media: String,
+            date: String,
+            time: String,
+            tags: Array,
+            likes: Number,
+            shares: Number,
+            downloads: Number,
+        }
+    ],
+    chats: [
+        {
+            with: String,
+            messages: [
+                {
+                    content: String,
+                    date: String,
+                    time: String,
+                    edited: Boolean,
+                    reactions: [
+                        {
+                            type: String,
+                            count: Number,
+                        }
+                    ]
+                }
+            ]
+        }
+    ],*/
