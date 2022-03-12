@@ -190,6 +190,18 @@ app.get("/api/getAllUsers", async (req, res) => {
     });
 });
 
+// Login
+app.get("/api/login", async (req,res ) => {
+    await newUserModel.find().then((result) => {
+        res.send(result)
+        console.log(result);
+    }).catch((err) => {
+        res.send([]);
+        console.log(err);
+    })
+});
+
+//? Posts
 // Create New Post
 app.get("/api/createNewPost/:username/:title/:subtitle/:likes/:shares", async (req, res) => {
     console.log("creating new post...");
