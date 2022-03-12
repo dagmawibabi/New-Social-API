@@ -175,7 +175,7 @@ app.get("/api/createNewUser/:username/:password", async (req, res) => {
         creationDate: today.toLocaleDateString(),
         creationTime: today.toLocaleTimeString(),
     }).save();
-    await allUsersModel.updateOne({_id: "622cc8969b3a116206a8c96b"},{$push: {profiles: {username: req.params.username}}});
+    await allUsersModel.updateOne({_id: "622d07b6839d110dd39bf0fc"},{$push: {profiles: {username: req.params.username}}});
     console.log("new user account created!");
     res.send("New account created!");
 });
