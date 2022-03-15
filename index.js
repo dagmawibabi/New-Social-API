@@ -229,7 +229,7 @@ app.get("/api/createNewPost/:username/:password/:title/:body", async (req, res) 
         }
     );
     console.log("new post created!");
-    res.send("New Post created!");
+    res.sendStatus(200);
 });
 
 app.get("/api/getPosts/:username/:password", async (req, res) => {
