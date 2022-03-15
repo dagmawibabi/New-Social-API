@@ -207,21 +207,24 @@ app.get("/api/login/:username/:password", async (req,res ) => {
 
 //? Posts
 // Create New Post
-app.get("/api/createNewPost/:username/:title/:subtitle/:likes/:shares", async (req, res) => {
+app.get("/api/createNewPost/:username/:password/:title/:body", async (req, res) => {
+    const timeElapsed = Date.now();
+    const today = new Date(timeElapsed);    
     console.log("creating new post...");
-    await newUserModel.updateOne(
+    await allUsersModel.updateOne({_id: "622d07b6839d110dd39bf0fc"}, {$push: {profiles: {username: req.params.username}}});
+    let b = await newUserModel.updateOne(
         {
-            username: req.params.username
-        }, 
+            username: req.params.username,
+            password: req.params.password,
+        },
         {
-            $push: {
-                posts:
-                    {
-                        title: req.params.title, 
-                        subtitle: req.params.subtitle, 
-                        likes: req.params.likes, 
-                        shares: req.params.shares
-                    }   
+            $push :{
+                posts: {
+                    "title": req.params.title, 
+                    "body": req.params.body, 
+                    "date": today.toLocaleDateString(),
+                    "time": today.toLocaleTimeString(),
+                }
             }
         }
     );
@@ -229,6 +232,11 @@ app.get("/api/createNewPost/:username/:title/:subtitle/:likes/:shares", async (r
     res.send("New Post created!");
 });
 
+app.get("/api/getPosts/:username/:password", async (req, res) => {
+    var posts = await newUserModel.findOne({username: req.params.username, password: req.params.password});
+    console.log(posts["posts"]);
+    res.send(posts["posts"]);
+});
 
 //!  IMPORTANT
 // Connect To DB - MongoDB Atlas - 500mbs
