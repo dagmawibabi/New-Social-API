@@ -261,8 +261,8 @@ app.get("/api/getPosts/:username/:password", async (req, res) => {
 // Get all posts
 app.get("/api/getAllPosts", async (req, res) => {
     var posts = await allPostsModel.find();
-    console.log(posts["posts"]);
-    res.send(posts["posts"]);
+    console.log(posts[0]["posts"]);
+    res.send(posts[0]["posts"]);
 });
 
 
