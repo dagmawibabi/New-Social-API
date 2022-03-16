@@ -14,7 +14,6 @@ let messagesSchema = new mongoose.Schema({
 
 let messagesModel = new mongoose.model("messages", messagesSchema);
 
-
 // Home
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 app.get("/",(req, res) => {
@@ -27,6 +26,9 @@ app.get("/",(req, res) => {
 app.get("/api/",(req, res) => {
     res.send("Welcome to New-Social API");
 });
+
+
+
 
 
 // G L O B A L  C H A T
@@ -60,8 +62,6 @@ let globalMessages = [
         "time": "4:52:42 PM",
     },    
 ];
-
-
 
 // Send Global Message
 app.get("/api/sendGlobalMessage/:sender/:message",(req, res)=>{
@@ -142,6 +142,8 @@ app.get("/api/changeDPGlobalMessage", async (req, res)=>{
 
 
 
+
+
 //?
 // Create a new User
 let newUserSchema = new mongoose.Schema({
@@ -205,7 +207,16 @@ app.get("/api/login/:username/:password", async (req,res ) => {
     });
 });
 
+
+
+
+
 //? Posts
+let allPostsScheme = new mongoose.Schema({
+    posts: Array,
+});
+let allPostsModel = new mongoose.model("allPosts", allPostsScheme);
+
 // Create New Post
 app.get("/api/createNewPost/:username/:password/:title/:body", async (req, res) => {
     const timeElapsed = Date.now();
@@ -228,15 +239,34 @@ app.get("/api/createNewPost/:username/:password/:title/:body", async (req, res) 
             }
         }
     );
+    await allPostsModel.updateOne({_id: "62320125970c537556052883"}, {$push: { posts: {
+        "username": req.params.username, 
+        "title": req.params.title, 
+        "body": req.params.body, 
+        "date": today.toLocaleDateString(),
+        "time": today.toLocaleTimeString(),
+    }}});
     console.log("new post created!");
     res.sendStatus(200);
 });
 
+// Get a person's posts
 app.get("/api/getPosts/:username/:password", async (req, res) => {
     var posts = await newUserModel.findOne({username: req.params.username, password: req.params.password});
     console.log(posts["posts"]);
     res.send(posts["posts"]);
 });
+
+
+// Get all posts
+app.get("/api/getAllPosts", async (req, res) => {
+    var posts = await allPostsModel.find();
+    console.log(posts["posts"]);
+    res.send(posts["posts"]);
+});
+
+
+
 
 //!  IMPORTANT
 // Connect To DB - MongoDB Atlas - 500mbs
