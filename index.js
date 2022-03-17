@@ -237,6 +237,7 @@ app.get("/api/createNewPost/:username/:password/:title/:body", async (req, res) 
                     "time": today.toLocaleTimeString(),
                     "likes": 0,
                     "shares": 0,            
+                    "likers": [],
                 }
             }
         }
@@ -285,20 +286,11 @@ app.get("/api/getAllPosts", async (req, res) => {
 
 // Like Posts
 app.get("/api/likePost/:liker/:username/:time/:date/:like", async (req, res) => {
-    let user = await newUserModel.findOne({username: req.params.username, "posts.$.time": "2:58:49 AM"});
+    let likeInt = parseInt(req.params.like);
+    let user = await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: "8:34:50 PM", date:"3/17/2022"}} }, {$inc: {"posts.$.likes": likeInt}});
 
-    await allPostsModel.updateOne({username: req.params.username}, {$inc: { posts: {
-        "likes": 1,
-    }}});
-    let wantedPost = {};
+    await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: "8:34:50 PM", date:"3/17/2022"}} }, {posts: {$push: {likes: {username: req.params.username}}} });
     console.log(user);
-    /*for(eachPost of user["posts"]){
-        if((eachPost["time"] == "2:58:49 AM") && (eachPost["date"] == "3/17/2022")){
-            wantedPost = eachPost;
-            console.log(eachPost);
-        }
-    }*/
-    //await newUserModel.updateOne({username: req.params.username}, )
     res.send("cool");
 });
 
