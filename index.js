@@ -279,6 +279,19 @@ app.get("/api/getAllPosts", async (req, res) => {
 });
 
 
+// Like Posts
+app.get("/api/likePost/:liker/:username/:time/:date/:like", async (req, res) => {
+    let user = await newUserModel.findOne({username: req.params.username});
+    console.log(user);
+    await newUserModel.updateOne({}, {});
+    for(eachPost of user["posts"]){
+        if((eachPost["time"] == req.params.time) && (eachPost["date"] == req.params.date)){
+
+        }
+    }
+    res.status("cool");
+});
+
 
 
 //!  IMPORTANT
