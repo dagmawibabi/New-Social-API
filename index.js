@@ -260,9 +260,22 @@ app.get("/api/getPosts/:username/:password", async (req, res) => {
 
 // Get all posts
 app.get("/api/getAllPosts", async (req, res) => {
-    var posts = await allPostsModel.find();
-    console.log(posts[0]["posts"]);
-    res.send(posts[0]["posts"]);
+    let allUsers = await newUserModel.find();
+    let posts = await allPostsModel.find();
+    let eachPost = "";
+    let allAdjustedPosts = [];
+    for(eachPost of posts[0]["posts"]){
+        for(eachUser of allUsers){
+            if(eachPost["username"] == eachUser["username"]){
+                eachPost["dp"] = eachUser["dp"];
+                allAdjustedPosts.push(eachPost);
+            }
+        }
+    }
+    console.log(allAdjustedPosts);
+    res.send(allAdjustedPosts);
+    //console.log(posts[0]["posts"]);
+    //res.send(posts[0]["posts"]);
 });
 
 
