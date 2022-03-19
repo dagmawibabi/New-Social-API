@@ -297,20 +297,55 @@ app.get("/api/getAllPosts", async (req, res) => {
 
 
 // Like Posts
-app.get("/api/likePost/:liker/:username/:time/:day/:month/:year/:like", async (req, res) => {
-    let likeInt = parseInt(req.params.like);
-    let date = req.params.month.toString() + "/" + req.params.day.toString() + "/" + req.params.year.toString();
-    let user = await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$inc: {"posts.$.likes": likeInt}});
+app.get("/api/likePost/:liker/:username/:time/:day/:month/:year", async (req, res) => {
 
+    let likeInt = 0;
+    let date = req.params.month.toString() + "/" + req.params.day.toString() + "/" + req.params.year.toString();
+
+    // Check if likable
+    let allLikers = await allPostsModel.findOne({});
+    for(eachPost of allLikers["posts"]){
+        if (eachPost["time"] == req.params.time && eachPost["date"] == date){
+            if (eachPost["likers"].includes(req.params.liker) == false){
+                likeInt = -1;
+            } else {
+                likeInt = 1;
+            }
+        }
+    }
+    // Find the specific post and increment like
+    let user = await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$inc: {"posts.$.likes": likeInt}});
+    
+    // Add the liker to the likers list
     await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$push: {"posts.$.likers": {username: req.params.username}} });
-    await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$inc: {"posts.$.likes": likeInt} });
     await newUserModel.updateOne({username: req.params.username}, {$inc: {numOfLikes: likeInt}});
     await newUserModel.updateOne({username: req.params.username}, {$push: {likers: req.params.username}});
+
+    // Find the specific post and increment like
+    await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$inc: {"posts.$.likes": likeInt} });
+    await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$push: {"posts.$.likers": req.params.username} });
+
+
+
+
+
     console.log(user);
     res.status(200);
 });
 
 // admin
+
+app.get("/api/likers", async (req, res) => {
+    let likeInt = parseInt(req.params.like);
+    let date = 3 + "/" + 19 + "/" + 2022;
+    //let aa = await allPostsModel.findOne({posts: {$elemMatch: {time: req.params.time, date: date}}});
+    let aa = await allPostsModel.findOne({});
+    for(eachPost of aa["posts"]){
+        console.log(eachPost["likers"]);
+    }
+    res.status(200);
+
+});
 
 
 //!  IMPORTANT
