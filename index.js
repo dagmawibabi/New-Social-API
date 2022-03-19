@@ -288,7 +288,7 @@ app.get("/api/getAllPosts", async (req, res) => {
 // Like Posts
 app.get("/api/likePost/:liker/:username/:time/:day/:month/:year/:like", async (req, res) => {
     let likeInt = parseInt(req.params.like);
-    let date = req.params.day.toString() + "/" + req.params.month.toString() + "/" + req.params.year.toString();
+    let date = req.params.month.toString() + "/" + req.params.day.toString() + "/" + req.params.year.toString();
     let user = await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$inc: {"posts.$.likes": likeInt}});
 
     await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$push: {"posts.$.likers": {username: req.params.username}} });
