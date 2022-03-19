@@ -3,6 +3,29 @@ const { ListCollectionsCursor } = require("mongodb");
 let app = express();
 let mongoose = require("mongoose");
 
+
+//! SERVER
+let portNum = process.env.PORT || 7000;
+app.listen(portNum, ()=>{
+    console.log(`Server listening on port ${portNum}`);
+})
+
+//! Database
+// Connect To DB - MongoDB Atlas - 500mbs
+async function connectToDB(){
+    console.log("Connecting...");
+    let mongoAtlastUrl = "mongodb+srv://NewSocialAPI:NewSocialAPI1234@cluster0.fivp4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+    await mongoose.connect(mongoAtlastUrl, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }).then(console.log("MDBA Connected!")).catch(err => console.log("ERROR"));
+    console.log("connected!");
+}
+connectToDB();
+
+
+//! API
+
 // Database
 let messagesSchema = new mongoose.Schema({
     dp: String,
@@ -23,7 +46,7 @@ app.get("/",(req, res) => {
 });
 
 // Home
-app.get("/api/",(req, res) => {
+app.get("/aurora/api/",(req, res) => {
     res.send("Welcome to New-Social API");
 });
 
@@ -31,7 +54,7 @@ app.get("/api/",(req, res) => {
 
 
 
-// G L O B A L  C H A T
+//? G L O B A L  C H A T
 let globalMessages = [
     {
         "dp": "https://i.pinimg.com/564x/f8/9b/97/f89b97b7b61ef45ca3025c7a0bbd9310.jpg",
@@ -64,7 +87,7 @@ let globalMessages = [
 ];
 
 // Send Global Message
-app.get("/api/sendGlobalMessage/:sender/:message",(req, res)=>{
+app.get("/aurora/api/sendGlobalMessage/:sender/:message",(req, res)=>{
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);    
     let messageObject = {
@@ -93,7 +116,7 @@ app.get("/api/sendGlobalMessage/:sender/:message",(req, res)=>{
 
 // Receive Global Message
 let globalMessagesFromDB = [];
-app.get("/api/receiveGlobalMessage", async (req, res)=>{
+app.get("/aurora/api/receiveGlobalMessage", async (req, res)=>{
     // fetch from a db
     await messagesModel.find().then((result) => {
         globalMessages = result;
@@ -107,33 +130,28 @@ app.get("/api/receiveGlobalMessage", async (req, res)=>{
 });
 
 // Delete Global Message
-app.get("/api/deleteGlobalMessage/:sender/:message/:time", async (req, res) => {
+app.get("/aurora/api/deleteGlobalMessage/:sender/:message/:time", async (req, res) => {
     let b = await messagesModel.deleteOne({sender: req.params.sender, message: req.params.message, time: req.params.time});
     res.send("Message Deleted!");
 })
 
 // Editing Global Message
-app.get("/api/updateGlobalMessage/:sender/:message/:time/:newMessage", async (req, res) => {
+app.get("/aurora/api/updateGlobalMessage/:sender/:message/:time/:newMessage", async (req, res) => {
     console.log("editting");
     let b = await messagesModel.updateOne({sender: req.params.sender, message: req.params.message, time: req.params.time}, {$set: {sender: req.params.sender, message: req.params.newMessage, time: req.params.time}});
     console.log("Done!");
     res.send("Message Deleted!");
 })
 
-// Server
-let portNum = process.env.PORT || 7000;
-app.listen(portNum, ()=>{
-    console.log(`Server listening on port ${portNum}`);
-})
 
 // admin quick changes 
-app.get("/api/changeDPGlobalMessage/:sender/:dp", async (req, res)=>{
+app.get("/aurora/api/changeDPGlobalMessage/:sender/:dp", async (req, res)=>{
     console.log("fixing");
     let b = await messagesModel.updateMany({sender: req.params.sender}, {$set: {dp: req.params.dp}});
     console.log("Done!");
     res.send("Changed DP!");
 })
-app.get("/api/changeDPGlobalMessage", async (req, res)=>{
+app.get("/aurora/api/changeDPGlobalMessage", async (req, res)=>{
     console.log("fixing");
     let b = await messagesModel.updateMany({sender: "yeabu"}, {$set: {dp: "https://i.pinimg.com/originals/48/3f/be/483fbebfa30d9d506715307a9de897b1.gif"}});
     console.log("Done!");
@@ -172,7 +190,7 @@ let newUserModel = new mongoose.model("users", newUserSchema);
 let allUsersModel = new mongoose.model("allUsers", allUsersSchema);
 
 // Create a new User
-app.get("/api/createNewUser/:fullname/:username/:password", async (req, res) => {
+app.get("/aurora/api/createNewUser/:fullname/:username/:password", async (req, res) => {
     console.log("creating new user!");
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);    
@@ -194,7 +212,7 @@ app.get("/api/createNewUser/:fullname/:username/:password", async (req, res) => 
 });
 
 // Get all usernames 
-app.get("/api/getAllUsers", async (req, res) => {
+app.get("/aurora/api/getAllUsers", async (req, res) => {
     await allUsersModel.find().then((result) => {
         res.send(result[0]["profiles"]);
         console.log(result[0]["profiles"]);
@@ -204,7 +222,7 @@ app.get("/api/getAllUsers", async (req, res) => {
 });
 
 // Login
-app.get("/api/login/:username/:password", async (req,res ) => {
+app.get("/aurora/api/login/:username/:password", async (req,res ) => {
     await newUserModel.findOne({username: req.params.username, password: req.params.password}).then((result) => {
         if(result != "" || result != " " || result != null){
             res.send(result)
@@ -229,7 +247,7 @@ let allPostsScheme = new mongoose.Schema({
 let allPostsModel = new mongoose.model("allPosts", allPostsScheme);
 
 // Create New Post
-app.get("/api/createNewPost/:username/:password/:title/:body", async (req, res) => {
+app.get("/aurora/api/createNewPost/:username/:password/:title/:body", async (req, res) => {
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);    
     console.log("creating new post...");
@@ -268,7 +286,7 @@ app.get("/api/createNewPost/:username/:password/:title/:body", async (req, res) 
 });
 
 // Get a person's posts
-app.get("/api/getPosts/:username/:password", async (req, res) => {
+app.get("/aurora/api/getPosts/:username/:password", async (req, res) => {
     var posts = await newUserModel.findOne({username: req.params.username, password: req.params.password});
     console.log(posts["posts"]);
     res.send(posts["posts"]);
@@ -276,7 +294,7 @@ app.get("/api/getPosts/:username/:password", async (req, res) => {
 
 
 // Get all posts
-app.get("/api/getAllPosts", async (req, res) => {
+app.get("/aurora/api/getAllPosts", async (req, res) => {
     let allUsers = await newUserModel.find();
     let posts = await allPostsModel.find();
     let eachPost = "";
@@ -297,7 +315,7 @@ app.get("/api/getAllPosts", async (req, res) => {
 
 
 // Like Posts
-app.get("/api/likePost/:liker/:username/:time/:day/:month/:year", async (req, res) => {
+app.get("/aurora/api/likePost/:liker/:username/:time/:day/:month/:year", async (req, res) => {
 
     let likeInt = 0;
     let date = req.params.month.toString() + "/" + req.params.day.toString() + "/" + req.params.year.toString();
@@ -337,8 +355,7 @@ app.get("/api/likePost/:liker/:username/:time/:day/:month/:year", async (req, re
 });
 
 // admin
-
-app.get("/api/likers", async (req, res) => {
+app.get("/aurora/api/likers", async (req, res) => {
     let likeInt = parseInt(req.params.like);
     let date = 3 + "/" + 19 + "/" + 2022;
     //let aa = await allPostsModel.findOne({posts: {$elemMatch: {time: req.params.time, date: date}}});
@@ -351,19 +368,6 @@ app.get("/api/likers", async (req, res) => {
 });
 
 
-//!  IMPORTANT
-// Connect To DB - MongoDB Atlas - 500mbs
-async function connectToDB(){
-    console.log("Connecting...");
-    let mongoAtlastUrl = "mongodb+srv://NewSocialAPI:NewSocialAPI1234@cluster0.fivp4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-    await mongoose.connect(mongoAtlastUrl, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }).then(console.log("MDBA Connected!")).catch(err => console.log("ERROR"));
-    console.log("connected!");
-}
-
-connectToDB();
 
 
 
