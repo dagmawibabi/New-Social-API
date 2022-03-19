@@ -308,8 +308,14 @@ app.get("/api/likePost/:liker/:username/:time/:day/:month/:year", async (req, re
         if (eachPost["time"] == req.params.time && eachPost["date"] == date){
             if (eachPost["likers"].includes(req.params.liker) == false){
                 likeInt = 1;
+                await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$push: {"posts.$.likers": {username: req.params.username}} });
+                await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$push: {"posts.$.likers": req.params.username} });
+                await newUserModel.updateOne({username: req.params.username}, {$push: {likers: req.params.username}});
             } else {
                 likeInt = -1;
+                await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$pull: {"posts.$.likers": {username: req.params.username}} });
+                await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$pull: {"posts.$.likers": req.params.username} });
+                await newUserModel.updateOne({username: req.params.username}, {$pull: {likers: req.params.username}});
             }
         }
     }
@@ -317,13 +323,10 @@ app.get("/api/likePost/:liker/:username/:time/:day/:month/:year", async (req, re
     let user = await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$inc: {"posts.$.likes": likeInt}});
     
     // Add the liker to the likers list
-    await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$push: {"posts.$.likers": {username: req.params.username}} });
     await newUserModel.updateOne({username: req.params.username}, {$inc: {numOfLikes: likeInt}});
-    await newUserModel.updateOne({username: req.params.username}, {$push: {likers: req.params.username}});
 
     // Find the specific post and increment like
     await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$inc: {"posts.$.likes": likeInt} });
-    await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$push: {"posts.$.likers": req.params.username} });
 
 
 
