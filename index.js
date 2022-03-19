@@ -148,14 +148,20 @@ app.get("/api/changeDPGlobalMessage", async (req, res)=>{
 // Create a new User
 let newUserSchema = new mongoose.Schema({
     dp: String,
+    fullname: String,
     username: String,
     password: String,
     creationDate: String,
     creationTime: String,
     profile: Array,
-    friends: Array,
-    posts: Array,
     chats: Array,
+    friends: Array,
+    followers: Array,
+    posts: Array,
+    numOfFriends: Number,
+    numOfFollowers: Number,
+    numOfPosts: Number,
+    numOfLikes: Number,
 });
 
 let allUsersSchema = new mongoose.Schema({
@@ -166,16 +172,21 @@ let newUserModel = new mongoose.model("users", newUserSchema);
 let allUsersModel = new mongoose.model("allUsers", allUsersSchema);
 
 // Create a new User
-app.get("/api/createNewUser/:username/:password", async (req, res) => {
+app.get("/api/createNewUser/:fullname/:username/:password", async (req, res) => {
     console.log("creating new user!");
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);    
     let newUser = new newUserModel({
         dp: "https://i.pinimg.com/564x/86/4d/3f/864d3f2beebcd48f4cf57052031de4a0.jpg",
+        fullname: req.params.fullname,
         username: req.params.username,
         password: req.params.password,
         creationDate: today.toLocaleDateString(),
         creationTime: today.toLocaleTimeString(),
+        numOfFriends: 0,
+        numOfFollowers: 0,
+        numOfPosts: 0,
+        numOfLikes: 0,
     }).save();
     await allUsersModel.updateOne({_id: "622d07b6839d110dd39bf0fc"},{$push: {profiles: {username: req.params.username}}});
     console.log("new user account created!");
@@ -297,6 +308,7 @@ app.get("/api/likePost/:liker/:username/:time/:day/:month/:year/:like", async (r
     res.status(200);
 });
 
+// admin
 
 
 //!  IMPORTANT
