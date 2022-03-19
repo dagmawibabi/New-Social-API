@@ -8,7 +8,7 @@ let mongoose = require("mongoose");
 let portNum = process.env.PORT || 7000;
 app.listen(portNum, ()=>{
     console.log(`Server listening on port ${portNum}`);
-})
+});
 
 //! Database
 // Connect To DB - MongoDB Atlas - 500mbs
