@@ -307,9 +307,9 @@ app.get("/api/likePost/:liker/:username/:time/:day/:month/:year", async (req, re
     for(eachPost of allLikers["posts"]){
         if (eachPost["time"] == req.params.time && eachPost["date"] == date){
             if (eachPost["likers"].includes(req.params.liker) == false){
-                likeInt = -1;
-            } else {
                 likeInt = 1;
+            } else {
+                likeInt = -1;
             }
         }
     }
