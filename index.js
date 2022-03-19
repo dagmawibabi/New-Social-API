@@ -304,6 +304,7 @@ app.get("/api/likePost/:liker/:username/:time/:day/:month/:year/:like", async (r
 
     await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$push: {"posts.$.likers": {username: req.params.username}} });
     await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$inc: {"posts.$.likes": likeInt} });
+    await newUserModel.updateOne({username: req.params.username}, {$inc: {numOfLikes: likeInt}});
     console.log(user);
     res.status(200);
 });
