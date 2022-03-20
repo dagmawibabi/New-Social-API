@@ -10,6 +10,10 @@ app.listen(portNum, ()=>{
     console.log(`Server listening on port ${portNum}`);
 });
 
+app.get("/aurora/api/server",(req, res) => {
+    res.send(`Server listening on port ${portNum}...`);
+});
+
 //! Database
 // Connect To DB - MongoDB Atlas - 500mbs
 async function connectToDB(){
