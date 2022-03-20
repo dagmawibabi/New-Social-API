@@ -326,18 +326,22 @@ app.get("/aurora/api/likePost/:liker/:username/:time/:day/:month/:year", async (
 
     // Check if likable
     let allLikers = await allPostsModel.findOne({});
+    //console.log(allLikers);
     for(eachPost of allLikers["posts"]){
         if (eachPost["time"] == req.params.time && eachPost["date"] == date){
-            if (eachPost["likers"].includes(req.params.liker) == false){
-                likeInt = 1;
-                await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$push: {"posts.$.likers": {username: req.params.username}} });
-                await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$push: {"posts.$.likers": req.params.username} });
-                await newUserModel.updateOne({username: req.params.username}, {$push: {likers: req.params.username}});
-            } else {
+            console.log(eachPost["likers"]);
+            if (eachPost["likers"].includes(req.params.liker)){
+                console.log("already likes so decrease");
                 likeInt = -1;
-                await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$pull: {"posts.$.likers": {username: req.params.username}} });
-                await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$pull: {"posts.$.likers": req.params.username} });
-                await newUserModel.updateOne({username: req.params.username}, {$pull: {likers: req.params.username}});
+                await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$pull: {"posts.$.likers": {username: req.params.liker}} });
+                await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$pull: {"posts.$.likers": req.params.liker} });
+                //await newUserModel.updateOne({username: req.params.username}, {$pull: {likers: req.params.username}});
+            } else {
+                console.log("new like added");
+                likeInt = 1;
+                await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$push: {"posts.$.likers": {username: req.params.liker}} });
+                await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$push: {"posts.$.likers": req.params.liker} });
+                //await newUserModel.updateOne({username: req.params.username}, {$push: {likers: req.params.username}});
             }
         }
     }
