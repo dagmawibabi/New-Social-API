@@ -18,7 +18,7 @@ app.get("/aurora/api/server",(req, res) => {
 // Connect To DB - MongoDB Atlas - 500mbs
 async function connectToDB(){
     console.log("Connecting...");
-    let mongoAtlastUrl = "mongodb+srv://NewSocialAPI:NewSocialAPI1234@cluster0.fivp4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+    let mongoAtlastUrl = "mongodb+srv://dagmawibabi:dagmawibabi7@cluster0.fivp4.mongodb.net/cluster0/myFirstDatabase?retryWrites=true&w=majority";
     await mongoose.connect(mongoAtlastUrl, {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -241,6 +241,12 @@ app.get("/aurora/api/login/:username/:password", async (req,res ) => {
 });
 
 
+// Get all users all data
+app.get("/aurora/api/getAllUsersAllData", async (req,res ) => {
+    await newUserModel.find({}).then((result) => {
+        res.send(result)
+    });
+});
 
 
 
@@ -346,19 +352,19 @@ app.get("/aurora/api/likePost/:liker/:username/:time/:day/:month/:year", async (
         }
     }
     // Find the specific post and increment like
-    let user = await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$inc: {"posts.$.likes": likeInt}});
+    //let user = await newUserModel.updateOne({username: req.params.username, posts: {$elemMatch: {time: req.params.time, date: date}} }, {$inc: {"posts.$.likes": likeInt}});
     
     // Add the liker to the likers list
-    await newUserModel.updateOne({username: req.params.username}, {$inc: {numOfLikes: likeInt}});
+    //await newUserModel.updateOne({username: req.params.username}, {$inc: {numOfLikes: likeInt}});
 
     // Find the specific post and increment like
-    await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$inc: {"posts.$.likes": likeInt} });
+    //await allPostsModel.updateOne({posts: {$elemMatch: {time: req.params.time, date: date}}}, {$inc: {"posts.$.likes": likeInt} });
 
 
 
 
 
-    console.log(user);
+    //console.log(user);
     res.status(200);
 });
 
